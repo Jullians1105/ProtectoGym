@@ -22,6 +22,9 @@ function RutinaDeHoy({onSaved}) {
     const fechaISO = `${yyyy}-${mm}-${dd}` // "2025-06-15"
     
     const rutina = ejerciciosPorDia[diaNombre] || ["Descanso"];
+
+
+    
     
     const storageKey = `Dia entreno -${fechaISO}-${diaNombre}`
 
@@ -29,6 +32,10 @@ function RutinaDeHoy({onSaved}) {
         const guardado = localStorage.getItem(storageKey)
         return guardado ? JSON.parse(guardado) : []
     })
+
+    const total = rutina.length
+    const hechos = completados.length
+    const pct = total > 0 ? Math.round ((hechos / total)* 100) : 0
 
     useEffect(() => {
         localStorage.setItem(storageKey, JSON.stringify(completados))
@@ -44,6 +51,10 @@ function RutinaDeHoy({onSaved}) {
 
             <p>
                 Fecha: <strong>{fechaISO}</strong>
+            </p>
+
+            <p>
+                Progreso hoy: <strong>{hechos}</strong> / {total} ({pct}%)
             </p>
 
             <p>Te toca:</p>
