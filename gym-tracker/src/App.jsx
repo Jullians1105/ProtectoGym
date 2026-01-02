@@ -1,6 +1,7 @@
 import  {useState, useCallback,} from "react";
 import {NavLink,Routes,Route, Navigate} from "react-router-dom";
 import Rutina from "./pages/Rutina";
+import Reprogramar from "./pages/Reprogramar";
 
 import Hoy from "./pages/Hoy";
 import HistorialPage from "./pages/HistorialPage";
@@ -45,6 +46,18 @@ export default function App() {
           </NavLink>
 
           <NavLink
+              to="/reprogramar"
+              style = {({isActive}) => ({
+              textDecoration: "none",
+              padding: "8px 12px",
+              borderRadius: "10px",
+              background: isActive ? "#2a2f3a" : "#151821",
+              color: "white",
+            })}>
+              Reprogramar
+          </NavLink>
+
+          <NavLink
             to = "/historial"
             style = {({isActive}) => ({
               textDecoration: "none",
@@ -71,6 +84,11 @@ export default function App() {
               <HistorialPage 
                 refresh = {refreshHistorial} />
             }
+          />
+
+          <Route
+            path = "/reprogramar"
+            element = {<Reprogramar />}
           />
 
           <Route path= "/rutina" element = {<Rutina />} />

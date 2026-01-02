@@ -31,14 +31,37 @@ function Historial ({refresh}) {
     return result
 }, [refresh])
 
+
+                const especiales = useMemo(() => {
+                    const map = {};
+                Object.keys (localStorage)
+                .filter((k) => k.startsWith ("SesionEspecial-"))
+                .forEach((k) => {
+                    const obj = JSON.parse (localStorage.getItem (k) || "null");
+                    if (!obj) return;
+                    const desde = obj.reprogramadoDesde || obj.desde;
+                if (desde) map[desde] = obj;
+            });
+    return map;
+}, [refresh]);
+
     return (
         <div className="historial">
             <h2>Historial de entrenamientos</h2>
 
             {sesiones.length === 0 && <p> No hay entrenamientos aún</p>}
 
-            {sesiones.map((sesion) => (
-                <div
+            
+
+            {sesiones.map((sesion) => {
+
+                const special = especiales[sesion.fecha] || null;
+
+
+
+
+                return (
+                    <div
                     key={`${sesion.fecha}-${sesion.dia}`}
                     style={{marginBottom: "1rem"}}
                     >
@@ -46,13 +69,19 @@ function Historial ({refresh}) {
                             <strong>{sesion.fecha}</strong> - {sesion.dia}
                         </div>
 
+                        {special && (
+                            <p style={{color: "#facc15", margin: "4px 0"}}>
+                                Reprogramado para {special.nuevaFecha} → {special.nuevaFecha}
+                            </p>
+                        )}
                         <div>
                             Progreso: <strong>{sesion.hechos}</strong> / {sesion.total} (
                                 {sesion.pct}%)
                         </div>
-
-                        {sesion.ejercicios.map ((e) => {
+                    <ul>
+                            {sesion.ejercicios.map ((e) => {
                             const p = sesion.pesos?.[e]
+
                             return (
                                 <li key={e}>
                                     ✅ {e}
@@ -64,9 +93,9 @@ function Historial ({refresh}) {
                                 </li>
                             )
                         })}
-
+                    </ul>
                 </div>
-            ))}
+            )})}
         </div>
     )
 }

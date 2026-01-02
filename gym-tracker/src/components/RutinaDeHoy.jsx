@@ -20,15 +20,32 @@ function RutinaDeHoy({onSaved}) {
     const mm = String(hoy.getMonth () + 1).padStart (2, "0")
     const dd = String(hoy.getDate()).padStart(2, "0")
     const fechaISO = `${yyyy}-${mm}-${dd}` // "2025-06-15"
+
+
+
     
     const rutinaSemanal=JSON.parse(localStorage.getItem("RutinaSemanal") || "null");
     const rutina = (rutinaSemanal?.[diaNombre]) || ejerciciosPorDia[diaNombre] || ["Descanso"];
 
+    const pendientesKey = "PendientesEntreno"
+    const sesionEspecialKey = `SesionEspecial-${fechaISO}`
 
+    const sesionEspecial = JSON.parse(localStorage.getItem(sesionEspecialKey) || "null")
+
+    const diaRutina = sesionEspecial?.diaRutina || diaNombre
     
-    
-    const storageKey = `Dia entreno -${fechaISO}-${diaNombre}`
-    const pesosDiaKey = `PesosDia-${fechaISO}-${diaNombre}`
+    const storageKey = `Dia entreno -${fechaISO}-${diaRutina}`
+    const pesosDiaKey = `PesosDia-${fechaISO}-${diaRutina}`
+    const reprogramadoDesde = sesionEspecial?.reprogramadoDesde
+
+    const [pendientes, setPendientes] = useState (() => {
+        const guardado = localStorage.getItem(pendientesKey)
+        return guardado ? JSON.parse(guardado) : []
+    })
+
+    useEffect (() => {
+        localStorage.setItem(pendientesKey,JSON.stringify(pendientes))
+    }, [pendientes])
 
     const [completados, setCompletados] = useState (() => {
         const guardado = localStorage.getItem(storageKey)
@@ -65,9 +82,30 @@ function RutinaDeHoy({onSaved}) {
                 Fecha: <strong>{fechaISO}</strong>
             </p>
 
+            {reprogramadoDesde ? (
+                <p className="small">
+                    Reprogramado desde: <strong>{reprogramadoDesde}</strong>
+                </p>
+            ): null}
+
             <p>
                 Progreso hoy: <strong>{hechos}</strong> / {total} ({pct}%)
             </p>
+
+            <button
+                className = "btn"
+                onClick={() =>{
+                    const yaExiste=pendientes.some((p) => p.fecha === fechaISO)
+                    if (yaExiste) return
+
+                    setPendientes ([
+                        ...pendientes,
+                        {fecha: fechaISO, dia: diaNombre, rutina},
+                    ])
+                }}
+            >
+                Hoy no entrené, reprogramar
+            </button>
 
             <p>Te toca:</p>
 

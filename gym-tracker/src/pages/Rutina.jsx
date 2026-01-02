@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState} from "react";
 import {rutinaDefault} from "../data/rutinaDefault";
+import {ejerciciosBase} from "../data/ejerciciosBase";
 
 const STORAGE_KEY = "RutinaSemanal";
 
@@ -25,6 +26,8 @@ export default function Rutina() {
     const agregar = () => {
         const nombre = nuevoEjercicio.trim();
         if (!nombre) return;
+
+        if(listaDia.inclues(nombre)) return;
         
         setRutina({
             ...rutina,
@@ -83,6 +86,26 @@ export default function Rutina() {
                             borderRadius: 12,
                         }}
                     />
+
+                    <select
+                        value={nuevoEjercicio}
+                        onChange={(e) => setNuevoEjercicio(e.target.value)}
+                        style={{
+                            background: "rgba (255,255,255,0.7)",
+                            border: "1px solid rgba (255,255,255,0.08)",
+                            color: "white",
+                            padding: "10px 12px",
+                            borderRadius: 12,
+                        }}
+                    >
+                        <option value= "">Elegir ejercicio predeterminado...</option>
+                        {ejerciciosBase.map ((e) =>(
+                            <option key={e} value={e}>
+                                {e}
+                            </option>
+                        ))}
+                    </select>
+
                     <button className="btn" onClick={agregar}>Agregar</button>
                     <button className="btn" onClick={ponerDescanso}>Descanso</button>
                 </div>
