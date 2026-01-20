@@ -24,6 +24,7 @@ function RutinaDeHoy({onSaved}) {
         "Sábado",
     ];
 
+
     
     const hoy = new Date();
     const diaNombre = dias[hoy.getDay()];
